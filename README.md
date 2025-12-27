@@ -1,3 +1,3 @@
 pip install -r requirements.txt
 
-run test: 
+run test: pytest -s
