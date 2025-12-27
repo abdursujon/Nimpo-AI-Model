@@ -1,0 +1,110 @@
+Nimpo AI Model – Requirements
+
+Purpose
+
+Consume validated datasets from Spring Data Analysis API and train reproducible ML models on trusted data only.
+
+Functional Requirements
+1. Data Ingestion
+
+Fetch CSV analysis via API using dataset ID
+
+Reject datasets failing validation rules
+
+Never read raw CSV directly without API approval
+
+2. Validation Rules
+
+Enforce expected column count
+
+Enforce required columns
+
+Reject datasets with null-rate above threshold
+
+Detect schema drift vs previous dataset
+
+3. Dataset Versioning
+
+Every training run linked to a dataset ID
+
+Persist dataset ID with model artifact
+
+Allow full reproduction of training runs
+
+4. Feature Handling
+
+Auto-detect numeric vs categorical columns
+
+Drop invalid or high-null columns
+
+Log selected features per run
+
+5. Model Training
+
+Train baseline model (regression/classification)
+
+Support retraining on new dataset versions
+
+Save trained model with metadata
+
+6. Evaluation
+
+Compute basic metrics (MSE / accuracy)
+
+Log metrics alongside dataset ID
+
+Compare metrics across dataset versions
+
+7. Logging & Observability
+
+Log API responses
+
+Log validation decisions
+
+Log training outcomes
+
+Persist outputs to file (JSON)
+
+8. Automation Ready
+
+Runnable from CLI
+
+Runnable as scheduled job
+
+No manual intervention required
+
+Non-Functional Requirements
+
+Decoupled from Spring service (HTTP only)
+
+Deterministic, reproducible runs
+
+Fail fast on bad data
+
+No shared database or code with API
+
+Simple, readable Python codebase
+
+Out of Scope (for now)
+
+Real-time inference API
+
+Model serving
+
+UI dashboards
+
+Hyperparameter tuning
+
+Distributed training
+
+End Result
+
+A production-style ML consumer that proves:
+
+Data engineering → ML handoff
+
+Dataset governance
+
+Reproducible training
+
+Real-world architecture
