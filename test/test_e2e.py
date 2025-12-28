@@ -1,4 +1,4 @@
-from service.analysis_client import ingest_csv, get_analysis
+from local_service.analysis_client import ingest_csv, get_analysis
 import json
 
 def test_full_pipeline():

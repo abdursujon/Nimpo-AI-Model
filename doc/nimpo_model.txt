@@ -1,0 +1,69 @@
+// provide access to operating system features, to build correct paths independently of the working directory
+import os
+
+//Enables sending HTTP requests (GET, POST, etc.) to external APIs and receiving responses.
+import requests
+
+// Provides data structures and tools for loading, cleaning, and manipulating tabular data (DataFrames).
+import pandas as pd
+
+// Provides a linear regression model for fitting a linear relationship between input features and a target variable.
+from sklearn.linear_model import LinearRegression
+
+//Serializes and saves Python objects (e.g., trained models) to disk efficiently.
+from joblib import dump
+
+// API url that has been built to train this model
+BASE_URL = "https://spring-data-analysis-api.onrender.com"
+
+// Gets the absolute directory path of the current Python file.
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+//Gets the parent directory of BASE_DIR (the project root).
+PROJECT_ROOT = os.path.dirname(BASE_DIR)
+
+// Specify the path of the raw.csv data
+DATA_PATH = os.path.join(PROJECT_ROOT, "data", "raw.csv")
+
+MODEL_DIR = BASE_DIR
+
+def ingest_csv():
+    with open(DATA_PATH, "r", encoding="utf-8") as f:
+        csv_text = f.read()
+
+    r = requests.post(
+        f"{BASE_URL}/api/analysis/ingestCsv",
+        data=csv_text,
+        headers={"Content-Type": "text/plain"},
+        timeout=30
+    )
+    r.raise_for_status()
+    return r.json()
+
+def get_analysis(analysis_id: int):
+    r = requests.get(
+        f"{BASE_URL}/api/analysis/{analysis_id}",
+        timeout=30
+    )
+    r.raise_for_status()
+    return r.json()
+
+def main():
+    analysis = ingest_csv()
+    analysis_id = analysis["id"]
+
+    meta = get_analysis(analysis_id)
+    print(meta)
+
+    df = pd.read_csv(DATA_PATH)
+
+    X = df.select_dtypes(include=["number"]).dropna()
+    y = X.iloc[:, 0]
+
+    model = LinearRegression()
+    model.fit(X, y)
+
+    dump(model, os.path.join(MODEL_DIR, f"model_{analysis_id}.joblib"))
+
+if __name__ == "__main__":
+    main()

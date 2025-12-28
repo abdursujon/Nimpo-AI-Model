@@ -1,110 +1,89 @@
-Nimpo AI Model – Requirements
+Nimpo AI Model 
 
 Purpose
 
-Consume validated datasets from Spring Data Analysis API and train reproducible ML models on trusted data only.
+Consume validated datasets from Spring Data Analysis API and train Nimpo models on trusted data only.
 
-Functional Requirements
-1. Data Ingestion
+Nimpo is an AI system that determines whether a dataset is **fit for production use**, **model training**, or **decision-making**, and recommends corrective actions.
 
-Fetch CSV analysis via API using dataset ID
+It predicts **data quality, risk, and readiness**.
 
-Reject datasets failing validation rules
+---
 
-Never read raw CSV directly without API approval
+## 2. Real-World Problem Being Solved
 
-2. Validation Rules
+In production:
+- Bad data silently breaks models
+- Engineers waste time manually inspecting datasets
+- Models degrade due to drift and hidden data issues
 
-Enforce expected column count
+Nimpo automates:
+- Dataset inspection
+- Quality scoring
+- Risk detection
+- Remediation guidance
+- Drift awareness
 
-Enforce required columns
+This is a real problem in:
+- ML platforms
+- Data engineering teams
+- AI pipelines
+- Enterprise analytics
 
-Reject datasets with null-rate above threshold
+---
 
-Detect schema drift vs previous dataset
+## 3. Core Responsibility of Nimpo
 
-3. Dataset Versioning
+Given a dataset, Nimpo must answer:
 
-Every training run linked to a dataset ID
+1. Is this dataset usable?
+2. What is wrong with it?
+3. How risky is it?
+4. How does it compare to previous datasets?
+5. What should be done next?
 
-Persist dataset ID with model artifact
+---
 
-Allow full reproduction of training runs
+## 4. High-Level Architecture
 
-4. Feature Handling
+- **Spring API** → deterministic analysis + feature extraction
+- **Nimpo Model** → learns from those features and predicts outcomes
 
-Auto-detect numeric vs categorical columns
+The API produces **numbers and metadata**.  
+The model produces **decisions and recommendations**.
 
-Drop invalid or high-null columns
+---
 
-Log selected features per run
+## 5. Primary Outputs of Nimpo
 
-5. Model Training
+- Dataset quality score (1-10)
+- Issue classification (labels)
+- Risk indicators
+- Recommended remediation actions
+- Drift indicators
+- Confidence score
 
-Train baseline model (regression/classification)
+Example:
+```json
+{
+  "qualityScore": 6,
+  "riskLevel": "MEDIUM",
+  "issues": ["HIGH_NULL_RATE", "SCHEMA_INSTABILITY"],
+  "recommendations": ["IMPUTE_COLUMNS", "DROP_LOW_VALUE_COLUMNS"],
+  "driftDetected": true
+}
 
-Support retraining on new dataset versions
 
-Save trained model with metadata
+Over time, Nimpo should:
 
-6. Evaluation
+Decide usability based on patterns, not rules
 
-Compute basic metrics (MSE / accuracy)
+Predict risk before it happens
 
-Log metrics alongside dataset ID
+Detect drift trends, not just point-in-time
 
-Compare metrics across dataset versions
+Learn which issues actually break pipelines
 
-7. Logging & Observability
+Recommend actions that historically worked
 
-Log API responses
-
-Log validation decisions
-
-Log training outcomes
-
-Persist outputs to file (JSON)
-
-8. Automation Ready
-
-Runnable from CLI
-
-Runnable as scheduled job
-
-No manual intervention required
-
-Non-Functional Requirements
-
-Decoupled from Spring service (HTTP only)
-
-Deterministic, reproducible runs
-
-Fail fast on bad data
-
-No shared database or code with API
-
-Simple, readable Python codebase
-
-Out of Scope (for now)
-
-Real-time inference API
-
-Model serving
-
-UI dashboards
-
-Hyperparameter tuning
-
-Distributed training
-
-End Result
-
-A production-style ML consumer that proves:
-
-Data engineering → ML handoff
-
-Dataset governance
-
-Reproducible training
-
-Real-world architecture
+Assign confidence based on past outcomes
